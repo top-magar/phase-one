@@ -10,7 +10,7 @@
 // import DashboardContent from "@/components/dashboard/dashboard-content";
 
 // Import only the HomePanel, as other panels are now routed directly
-import HomePanel from "@/components/dashboard/panels/home-panel";
+import HomePanel from "@/components/dashboard/home-panel";
 
 // Removed unused panel imports and panels map
 

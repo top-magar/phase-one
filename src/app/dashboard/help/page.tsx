@@ -1,4 +1,4 @@
-import HelpPanel from "@/components/dashboard/panels/help-panel";
+import HelpPanel from "@/components/dashboard/help-panel";
 
 export default function Page() {
   return <HelpPanel />;

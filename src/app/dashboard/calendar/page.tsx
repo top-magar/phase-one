@@ -1,4 +1,4 @@
-import CalendarPanel from "@/components/dashboard/panels/calendar-panel";
+import CalendarPanel from "@/components/dashboard/calendar-panel";
 
 export default function Page() {
   return <CalendarPanel />;

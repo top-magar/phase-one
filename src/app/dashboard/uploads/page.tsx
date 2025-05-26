@@ -1,4 +1,4 @@
-import UploadsPanel from "@/components/dashboard/panels/uploads-panel";
+import UploadsPanel from "@/components/dashboard/uploads-panel";
 
 export default function Page() {
   return <UploadsPanel />;

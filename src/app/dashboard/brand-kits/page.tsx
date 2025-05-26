@@ -1,4 +1,4 @@
-import BrandKitsPanel from "@/components/dashboard/panels/brand-kits-panel";
+import BrandKitsPanel from "@/components/dashboard/brand-kits-panel";
 
 export default function Page() {
   return <BrandKitsPanel />;
