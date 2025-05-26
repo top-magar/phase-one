@@ -13,7 +13,7 @@ export async function login(prevState: string | undefined, formData: FormData) {
   console.log('[Server Action] Attempting login...');
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Basic validation (you can add more robust validation later)
   if (!email || !password) {
@@ -45,7 +45,7 @@ export async function signup(prevState: string | undefined, formData: FormData) 
   const origin = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'; // Use env var for base URL
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
-  const supabase = createClient();
+  const supabase = await createClient();
 
   if (!email || !password) {
     return "Email and password are required.";
@@ -82,7 +82,7 @@ export async function signup(prevState: string | undefined, formData: FormData) 
  */
 export async function logout() {
   console.log('[Server Action] Logging out...');
-  const supabase = createClient();
+  const supabase = await createClient();
   await supabase.auth.signOut();
   return redirect('/login');
 } 

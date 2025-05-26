@@ -10,12 +10,32 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { motion } from "framer-motion";
 import { tokens } from "@/lib/theme";
 import { cn } from "@/lib/utils";
+import { Twitter, Facebook, Instagram, Linkedin } from "lucide-react";
 
 type SocialAccount = {
   id: string;
   platform: string;
   username: string;
   created_at: string;
+};
+
+const PLATFORM_CONFIG = {
+  twitter: {
+    icon: <Twitter className="h-4 w-4" />,
+    bgColor: "bg-blue-500",
+  },
+  facebook: {
+    icon: <Facebook className="h-4 w-4" />,
+    bgColor: "bg-blue-600",
+  },
+  instagram: {
+    icon: <Instagram className="h-4 w-4" />,
+    bgColor: "bg-pink-500",
+  },
+  linkedin: {
+    icon: <Linkedin className="h-4 w-4" />,
+    bgColor: "bg-blue-700",
+  },
 };
 
 export default function ConnectedAccountsList() {
@@ -89,55 +109,48 @@ export default function ConnectedAccountsList() {
 
   return (
     <div className="space-y-4">
-      {accounts.map((account) => (
-        <motion.div
-          key={account.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, timing: tokens.animations.timing.default }}
-        >
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className={cn(
-                    "p-2 rounded-lg",
-                    account.platform === "twitter" && "bg-blue-100 dark:bg-blue-900",
-                    account.platform === "facebook" && "bg-blue-100 dark:bg-blue-900",
-                    account.platform === "instagram" && "bg-pink-100 dark:bg-pink-900",
-                    account.platform === "linkedin" && "bg-blue-100 dark:bg-blue-900"
-                  )}>
-                    <span className="text-lg">
-                      {account.platform === "twitter" && "𝕏"}
-                      {account.platform === "facebook" && "f"}
-                      {account.platform === "instagram" && "📸"}
-                      {account.platform === "linkedin" && "in"}
-                    </span>
+      {accounts.map((account) => {
+        const platformConfig = PLATFORM_CONFIG[account.platform as keyof typeof PLATFORM_CONFIG];
+        
+        return (
+          <motion.div
+            key={account.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, timing: tokens.animations.timing.default }}
+          >
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className={cn("p-2 rounded-lg", platformConfig.bgColor)}>
+                      <span className="text-lg">{platformConfig.icon}</span>
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-foreground">
+                        {account.platform.charAt(0).toUpperCase() + account.platform.slice(1)}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">@{account.username}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-medium text-foreground">
-                      {account.platform.charAt(0).toUpperCase() + account.platform.slice(1)}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">@{account.username}</p>
+                  <div className="flex items-center space-x-4">
+                    <Badge variant="secondary">
+                      Connected {new Date(account.created_at).toLocaleDateString()}
+                    </Badge>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDisconnect(account.id)}
+                    >
+                      Disconnect
+                    </Button>
                   </div>
                 </div>
-                <div className="flex items-center space-x-4">
-                  <Badge variant="secondary">
-                    Connected {new Date(account.created_at).toLocaleDateString()}
-                  </Badge>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDisconnect(account.id)}
-                  >
-                    Disconnect
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      ))}
+              </CardContent>
+            </Card>
+          </motion.div>
+        );
+      })}
     </div>
   );
 } 

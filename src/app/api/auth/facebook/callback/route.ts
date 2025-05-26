@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   const code = searchParams.get('code');
   const state = searchParams.get('state');
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies(); // Await the cookies() call
   const storedState = cookieStore.get('fb_oauth_state')?.value; // Retrieve state from cookie
 
   // 1. & 2. Receive code and state, and verify state for CSRF protection
@@ -93,7 +93,7 @@ export async function GET(request: Request) {
     console.log(`Found ${userAccounts.length} accounts.`);
 
     // 6. Encrypt Page/Account access tokens and 7. Store account details in Supabase
-    const supabase = createClient();
+    const supabase = await createClient(); // Await createClient()
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {

@@ -11,7 +11,7 @@ type ActionState = {
 };
 
 export async function schedulePostAction(prevState: ActionState, formData: FormData): Promise<ActionState> {
-  const supabase = createClient();
+  const supabase = await createClient();
   
   // Get user session
   const { data: { user }, error: userError } = await supabase.auth.getUser();

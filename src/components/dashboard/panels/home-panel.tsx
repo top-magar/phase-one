@@ -2,31 +2,18 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { tokens } from "@/lib/theme";
 import {
-  Sparkles,
-  Search,
   ArrowRight,
   BookOpen,
   Image as ImageIcon,
   Mail,
   Globe,
-  ShoppingBag,
-  Users,
   Clipboard,
-  CalendarDays,
-  PlayCircle,
-  Heart,
-  MessageCircle,
-  Share2,
-  UploadCloud,
   Calendar as CalendarIcon,
   Folder,
   Clock as ClockIcon,
@@ -37,27 +24,27 @@ import {
   Music,
   Video,
   FileText,
-  ChevronRight,
-  BarChart2,
-  CheckCircle,
-  Tag,
-  Layers,
-  UserPlus,
-  Zap,
-  HelpCircle,
-  Plus
+  ChevronRight
 } from "lucide-react";
 
 // Placeholder data (can be replaced with actual data later)
 const recentWorkItems = [
-  { title: 'Fashion Expression', image: '/placeholder.svg?h=150&w=200' },
-  { title: 'Saas Promotion', image: '/placeholder.svg?h=150&w=200' },
-  { title: 'Supportive Growth', image: '/placeholder.svg?h=150&w=200' },
-  { title: 'Balanced Lifestyle', image: '/placeholder.svg?h=150&w=200' },
-  { title: 'Boost Productivity', image: '/placeholder.svg?h=150&w=200' },
-  { title: 'Google Ad Copy', image: '/placeholder.svg?h=150&w=200' },
-  { title: 'Facebook Ad Copy', image: '/placeholder.svg?h=150&w=200' },
-  { title: 'X/Twitter Thread', image: '/placeholder.svg?h=150&w=200' },
+  {
+    title: "Instagram Post",
+    image: "/placeholder.svg?h=300&w=400&text=Instagram",
+  },
+  {
+    title: "Facebook Ad",
+    image: "/placeholder.svg?h=300&w=400&text=Facebook",
+  },
+  {
+    title: "Twitter Thread",
+    image: "/placeholder.svg?h=300&w=400&text=Twitter",
+  },
+  {
+    title: "LinkedIn Article",
+    image: "/placeholder.svg?h=300&w=400&text=LinkedIn",
+  },
 ];
 
 const contentCreationItems = [
@@ -68,10 +55,22 @@ const contentCreationItems = [
 ];
 
 const contentGenerationItems = [
-  { title: 'Social media', image: '/placeholder.svg?h=150&w=200' },
-  { title: 'Emails', image: '/placeholder.svg?h=150&w=200' },
-  { title: 'Blogs', image: '/placeholder.svg?h=150&w=200' },
-  { title: 'Video', image: '/placeholder.svg?h=150&w=200' },
+  {
+    title: "Social Post",
+    image: "/placeholder.svg?h=200&w=400&text=Social+Post",
+  },
+  {
+    title: "Blog Post",
+    image: "/placeholder.svg?h=200&w=400&text=Blog+Post",
+  },
+  {
+    title: "Email",
+    image: "/placeholder.svg?h=200&w=400&text=Email",
+  },
+  {
+    title: "Ad Copy",
+    image: "/placeholder.svg?h=200&w=400&text=Ad+Copy",
+  },
 ];
 
 const integrationItems = [
@@ -88,10 +87,30 @@ const kpiItems = [
 ];
 
 const contentMonthItems = [
-  { month: 'Dec 2024', day: '31', weekday: 'Sun', time: '3:39pm', platform: 'instagram', image: '/placeholder.svg?h=80&w=80' },
-  { month: 'Jan 2025', day: '1', weekday: 'Mon', time: '3:39pm', platform: 'facebook', image: '/placeholder.svg?h=80&w=80' },
-  { month: 'Feb 2025', day: '1', weekday: 'Mon', time: '1:20pm', platform: 'linkedin', image: '/placeholder.svg?h=80&w=80' },
-  { month: 'Feb 2025', day: '1', weekday: 'Mon', time: '1:20pm', platform: 'blog', image: '/placeholder.svg?h=80&w=80' },
+  {
+    weekday: "Mon",
+    day: "15",
+    month: "May 2024",
+    time: "9:00 AM",
+    platform: "Instagram",
+    image: "/placeholder.svg?h=100&w=100&text=IG",
+  },
+  {
+    weekday: "Wed",
+    day: "17",
+    month: "May 2024",
+    time: "2:00 PM",
+    platform: "Facebook",
+    image: "/placeholder.svg?h=100&w=100&text=FB",
+  },
+  {
+    weekday: "Fri",
+    day: "19",
+    month: "May 2024",
+    time: "11:00 AM",
+    platform: "Twitter",
+    image: "/placeholder.svg?h=100&w=100&text=TW",
+  },
 ];
 
 const transformItems = [
