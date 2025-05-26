@@ -4,11 +4,14 @@ import { useState, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { schedulePostAction } from '@/app/dashboard/scheduleActions';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Facebook, Instagram, Calendar, Clock, Sparkles } from 'lucide-react';
+import { Facebook, Instagram, Calendar, Sparkles } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { cn } from '@/lib/utils';
 
 type ActionState = {
   success: boolean
@@ -40,7 +43,7 @@ function SubmitButton() {
     <Button 
       type="submit" 
       disabled={pending}
-      className="bg-blue-600 hover:bg-blue-700 shadow-sm transition-all duration-200"
+      className="w-full"
     >
       {pending ? 'Scheduling...' : 'Schedule Post'}
     </Button>
@@ -88,38 +91,42 @@ export function SchedulePostForm() {
       } else {
         throw new Error('AI response was empty or malformed');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('AI Assist Error:', error);
-      setAiError(error.message || 'Failed to generate content');
+      setAiError(error instanceof Error ? error.message : 'Failed to generate content');
     } finally {
       setIsAiLoading(false);
     }
   };
 
   return (
-    <Card className="border-0 shadow-md bg-white/70 backdrop-blur-lg transition-all duration-300 hover:shadow-lg">
-      <CardContent className="p-6">
+    <Card>
+      <CardHeader>
+        <CardTitle>Create New Post</CardTitle>
+        <CardDescription>Schedule a post for your social media accounts</CardDescription>
+      </CardHeader>
+      <CardContent>
         <form action={formAction} className="space-y-6">
           {/* Account Selection */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Select Account</label>
+            <Label>Select Account</Label>
             <div className="flex flex-wrap gap-3">
               {connectedAccounts.map((account) => (
-                <button
+                <Button
                   key={account.id}
                   type="button"
+                  variant={selectedAccount === account.id ? "default" : "outline"}
                   onClick={() => setSelectedAccount(account.id)}
-                  className={`flex items-center gap-3 px-4 py-2 rounded-full border transition-all duration-200 text-sm font-medium
-                    ${selectedAccount === account.id
-                      ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm'
-                      : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-gray-50 text-gray-700'
-                  }`}
+                  className={cn(
+                    "flex items-center gap-3",
+                    selectedAccount === account.id && "bg-primary text-primary-foreground"
+                  )}
                 >
-                  <div className={`p-2 rounded-full ${account.color} shadow-sm`}>
+                  <div className={cn("p-2 rounded-full", account.color)}>
                     <account.icon className="h-4 w-4 text-white" />
                   </div>
                   {account.name}
-                </button>
+                </Button>
               ))}
             </div>
             <input type="hidden" name="socialAccountId" value={selectedAccount} />
@@ -128,14 +135,14 @@ export function SchedulePostForm() {
           {/* Content Input */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">Post Content</label>
+              <Label>Post Content</Label>
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
                 onClick={handleAiAssist}
                 disabled={isAiLoading}
-                className="text-purple-600 hover:text-purple-700 disabled:opacity-50 transition-colors duration-200"
+                className="text-primary hover:text-primary/90"
               >
                 <Sparkles className="h-4 w-4 mr-1" />
                 {isAiLoading ? 'Generating...' : 'AI Assist'}
@@ -147,34 +154,34 @@ export function SchedulePostForm() {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Write your post content here..."
-                className="min-h-[150px] resize-none border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg shadow-sm p-4 text-gray-800"
+                className="min-h-[150px] resize-none"
               />
               {content && (
-                <div className="absolute bottom-3 right-3 text-xs text-gray-500">
+                <div className="absolute bottom-3 right-3 text-xs text-muted-foreground">
                   {content.length}/280 characters
                 </div>
               )}
             </div>
             {aiError && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg shadow-sm mt-2">
-                <p className="text-sm text-red-700">{aiError}</p>
-              </div>
+              <Alert variant="destructive">
+                <AlertDescription>{aiError}</AlertDescription>
+              </Alert>
             )}
           </div>
 
           {/* Schedule Time */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Schedule Time</label>
+            <Label>Schedule Time</Label>
             <div className="flex gap-3 items-center">
-              <input
+              <Input
                 type="datetime-local"
                 name="scheduleTime"
                 value={scheduleTime}
                 onChange={(e) => setScheduleTime(e.target.value)}
-                className="flex-1 px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 shadow-sm text-gray-800"
+                className="flex-1"
               />
-              <div className="p-2 rounded-lg bg-gray-100 text-gray-600">
-                 <Calendar className="h-5 w-5" />
+              <div className="p-2 rounded-lg bg-muted">
+                <Calendar className="h-5 w-5 text-muted-foreground" />
               </div>
             </div>
           </div>
@@ -182,11 +189,11 @@ export function SchedulePostForm() {
           {/* AI Generation Progress */}
           {isAiLoading && (
             <div className="space-y-3">
-              <div className="flex items-center gap-3 text-sm text-gray-700">
-                <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-500 border-t-transparent"></div>
+              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent"></div>
                 AI is crafting your content...
               </div>
-              <Progress value={75} className="h-2 bg-blue-600" />
+              <Progress value={75} />
             </div>
           )}
 
@@ -197,11 +204,10 @@ export function SchedulePostForm() {
 
           {/* Action State Message */}
           {state?.message && (
-            <div className={`p-3 rounded-lg shadow-sm ${state.success ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
-              <p className="text-sm">{state.message}</p>
-            </div>
+            <Alert variant={state.success ? "default" : "destructive"}>
+              <AlertDescription>{state.message}</AlertDescription>
+            </Alert>
           )}
-
         </form>
       </CardContent>
     </Card>

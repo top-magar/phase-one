@@ -45,7 +45,9 @@ export async function sendChatMessage(
       max_tokens: options.max_tokens ?? 1000,
     });
 
-    return response.choices[0].message.content;
+    const content = response.choices[0].message.content;
+    if (!content) throw new Error('No content in response');
+    return content;
   } catch (error) {
     if (error instanceof Error) {
       throw new Error(`Failed to get response from DeepSeek: ${error.message}`);
