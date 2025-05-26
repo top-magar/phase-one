@@ -42,6 +42,8 @@ import { Separator } from "@/components/ui/separator"
 import { SchedulePostForm } from '@/components/SchedulePostForm'
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid"
 import { motion } from "motion/react"
+import ConnectButton from "@/components/ConnectButton"
+import ScheduledPostsCalendar from "@/components/ScheduledPostsCalendar"
 
 const navigationItems = [
   { label: "Dashboard", href: "/dashboard", icon: <Home /> },
@@ -233,13 +235,25 @@ const ConnectedAccountsHeader = () => {
                   <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{account.platform}</h3>
+                  <h3 className="text-base font-semibold text-gray-900">{account.platform}</h3>
                   <p className="text-sm text-gray-500">{account.handle}</p>
                 </div>
               </div>
-              <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200 transition-transform duration-300 group-hover:scale-105">
-                <CheckCircle className="h-3 w-3 mr-1" />
-                Active
+              <Badge 
+                variant="secondary" 
+                className={`transition-transform duration-300 group-hover:scale-105 ${account.status === 'connected'
+                  ? 'bg-green-100 text-green-700 border-green-200'
+                  : account.status === 'needs_reauth'
+                    ? 'bg-yellow-100 text-yellow-700 border-yellow-200'
+                    : account.status === 'revoked'
+                      ? 'bg-red-100 text-red-700 border-red-200'
+                      : 'bg-gray-100 text-gray-700 border-gray-200' // Default or unknown status
+                }`}
+              >
+                {account.status === 'connected' && <CheckCircle className="h-3 w-3 mr-1" />}
+                {account.status === 'needs_reauth' && <Clock className="h-3 w-3 mr-1" />}
+                {account.status === 'revoked' && <CalendarX className="h-3 w-3 mr-1" />}
+                {account.status.charAt(0).toUpperCase() + account.status.slice(1).replace('_', ' ')}
               </Badge>
             </div>
 
@@ -284,9 +298,10 @@ const ConnectedAccountsHeader = () => {
         ))
       ) : (
         <div className="flex h-full flex-col items-center justify-center text-center p-4">
-          <UsersRound className="w-12 h-12 text-gray-400 mb-3" />
-          <p className="text-lg font-semibold text-gray-700 mb-1">No Social Accounts Connected Yet</p>
-          <p className="text-sm text-gray-500 mb-4">Connect your Facebook and Instagram accounts to start managing your social media!</p>
+          <UsersRound className="w-16 h-16 text-gray-400 mb-4" />
+          <p className="text-xl font-semibold text-gray-700 mb-2">No Social Accounts Yet</p>
+          <p className="text-sm text-gray-500 mb-6">Connect your Facebook and Instagram accounts to start managing your social media!</p>
+          <ConnectButton />
         </div>
       )}
     </motion.div>
@@ -462,6 +477,14 @@ export default function Dashboard() {
               icon={<Clock className="h-4 w-4 text-neutral-500" />}
             />
           </BentoGrid>
+
+          {/* Scheduled Posts Calendar Section */}
+          <div className="mt-8">
+             {/* Placeholder for the Calendar Component */}
+             {/* <ScheduledPostsCalendar /> */}
+             <ScheduledPostsCalendar />
+          </div>
+
         </div>
       </main>
     </div>
