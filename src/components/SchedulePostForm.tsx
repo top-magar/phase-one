@@ -97,39 +97,28 @@ export function SchedulePostForm() {
   };
 
   return (
-    <Card className="border-0 shadow-sm bg-white/60 backdrop-blur-sm">
-      <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <div className="p-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600">
-            <Calendar className="h-5 w-5 text-white" />
-          </div>
-          Schedule New Post
-        </CardTitle>
-        <CardDescription>
-          Create and schedule your next social media post
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form action={formAction} className="space-y-4">
+    <Card className="border-0 shadow-md bg-white/70 backdrop-blur-lg transition-all duration-300 hover:shadow-lg">
+      <CardContent className="p-6">
+        <form action={formAction} className="space-y-6">
           {/* Account Selection */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">Select Account</label>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-3">
               {connectedAccounts.map((account) => (
                 <button
                   key={account.id}
                   type="button"
                   onClick={() => setSelectedAccount(account.id)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-all duration-200 ${
-                    selectedAccount === account.id
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-blue-300'
+                  className={`flex items-center gap-3 px-4 py-2 rounded-full border transition-all duration-200 text-sm font-medium
+                    ${selectedAccount === account.id
+                      ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm'
+                      : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-gray-50 text-gray-700'
                   }`}
                 >
-                  <div className={`p-1.5 rounded-lg ${account.color}`}>
+                  <div className={`p-2 rounded-full ${account.color} shadow-sm`}>
                     <account.icon className="h-4 w-4 text-white" />
                   </div>
-                  <span className="text-sm font-medium">{account.name}</span>
+                  {account.name}
                 </button>
               ))}
             </div>
@@ -146,7 +135,7 @@ export function SchedulePostForm() {
                 size="sm"
                 onClick={handleAiAssist}
                 disabled={isAiLoading}
-                className="text-blue-600 hover:text-blue-700 disabled:opacity-50"
+                className="text-purple-600 hover:text-purple-700 disabled:opacity-50 transition-colors duration-200"
               >
                 <Sparkles className="h-4 w-4 mr-1" />
                 {isAiLoading ? 'Generating...' : 'AI Assist'}
@@ -158,17 +147,17 @@ export function SchedulePostForm() {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Write your post content here..."
-                className="min-h-[120px] resize-none border-gray-200 focus:border-blue-500 focus:ring-blue-500/20"
+                className="min-h-[150px] resize-none border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 rounded-lg shadow-sm p-4 text-gray-800"
               />
               {content && (
-                <div className="absolute bottom-3 right-3 text-xs text-gray-400">
+                <div className="absolute bottom-3 right-3 text-xs text-gray-500">
                   {content.length}/280 characters
                 </div>
               )}
             </div>
             {aiError && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-sm text-red-600">{aiError}</p>
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg shadow-sm mt-2">
+                <p className="text-sm text-red-700">{aiError}</p>
               </div>
             )}
           </div>
@@ -176,44 +165,43 @@ export function SchedulePostForm() {
           {/* Schedule Time */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">Schedule Time</label>
-            <div className="flex gap-2">
+            <div className="flex gap-3 items-center">
               <input
                 type="datetime-local"
                 name="scheduleTime"
                 value={scheduleTime}
                 onChange={(e) => setScheduleTime(e.target.value)}
-                className="flex-1 px-3 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-blue-500/20"
+                className="flex-1 px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 shadow-sm text-gray-800"
               />
+              <div className="p-2 rounded-lg bg-gray-100 text-gray-600">
+                 <Calendar className="h-5 w-5" />
+              </div>
             </div>
           </div>
 
           {/* AI Generation Progress */}
           {isAiLoading && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-sm text-gray-700">
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-500 border-t-transparent"></div>
                 AI is crafting your content...
               </div>
-              <Progress value={75} className="h-2" />
-            </div>
-          )}
-
-          {/* Status Messages */}
-          {state.error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-600">{state.error}</p>
-            </div>
-          )}
-          {state.message && (
-            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm text-green-600">{state.message}</p>
+              <Progress value={75} className="h-2 bg-blue-600" />
             </div>
           )}
 
           {/* Submit Button */}
-          <div className="flex justify-end">
+          <div className="pt-4">
             <SubmitButton />
           </div>
+
+          {/* Action State Message */}
+          {state?.message && (
+            <div className={`p-3 rounded-lg shadow-sm ${state.success ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+              <p className="text-sm">{state.message}</p>
+            </div>
+          )}
+
         </form>
       </CardContent>
     </Card>
