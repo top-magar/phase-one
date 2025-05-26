@@ -1,25 +1,14 @@
 import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { Database } from '@/types/supabase';
 // Note: Using dynamic import for 'cookies' from 'next/headers'
 
-export const createClient = async () => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+export const createClient = () => {
+  const cookieStore = cookies();
 
-  // Debug logging
-  console.log('Environment Variables Check:');
-  console.log('NEXT_PUBLIC_SUPABASE_URL:', supabaseUrl ? '✅ Set' : '❌ Missing');
-  console.log('SUPABASE_SERVICE_ROLE_KEY:', supabaseKey ? '✅ Set' : '❌ Missing');
-
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Your project\'s URL and Key are required to create a Supabase client! Check your Supabase project\'s API settings to find these values: https://supabase.com/dashboard/project/_/settings/api');
-  }
-
-  const { cookies } = await import('next/headers');
-  const cookieStore = await cookies();
-
-  return createServerClient(
-    supabaseUrl,
-    supabaseKey,
+  return createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         get(name: string) {
