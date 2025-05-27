@@ -216,7 +216,7 @@ function Sidebar({
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
-          className="bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
+          className="bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden z-30"
           style={
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
@@ -228,18 +228,23 @@ function Sidebar({
             <SheetTitle>Sidebar</SheetTitle>
             <SheetDescription>Displays the mobile sidebar.</SheetDescription>
           </SheetHeader>
-          <div className="flex h-full w-full flex-col">
-            <div className="flex h-14 items-center border-b px-4">
-              <motion.div
-                initial={{ opacity: 1 }}
-                animate={{ opacity: state === "collapsed" ? 0 : 1 }}
-                transition={{ duration: 0.2 }}
-                className="flex items-center gap-2 font-semibold"
-              >
-                <span className="text-xl">Phase One</span>
-              </motion.div>
+          <div className={cn(
+            "flex h-full w-full flex-col",
+            "pt-[var(--announcement-bar-height)]" // Adjusted padding
+          )}>
+            <div className="flex h-14 items-center border-b px-4 bg-sidebar/95 backdrop-blur supports-[backdrop-filter]:bg-sidebar/75">
+              {/* Mobile Sidebar Header */}
+              {state === "expanded" ? (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }} className="flex items-center gap-2 font-semibold">
+                  <span className="text-xl">Phase One</span>
+                </motion.div>
+              ) : (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }} className="flex items-center justify-center w-full h-full">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-primary"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </motion.div>
+              )}
             </div>
-            <div className="flex-1 overflow-auto px-2 pt-[calc(1.75rem + var(--announcement-bar-height))] pb-2">
+            <div className="flex-1 overflow-auto px-2 pt-4 pb-2">
               <nav className="grid items-start px-2 text-sm font-medium">
                 {children}
               </nav>
@@ -273,7 +278,7 @@ function Sidebar({
       <div
         data-slot="sidebar-container"
         className={cn(
-          "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
+          "fixed inset-y-0 z-30 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex",
           side === "left"
             ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
             : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
@@ -287,19 +292,21 @@ function Sidebar({
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
+          className="bg-sidebar/95 backdrop-blur supports-[backdrop-filter]:bg-sidebar/75 group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
         >
           <div className="flex h-14 items-center border-b px-4">
-            <motion.div
-              initial={{ opacity: 1 }}
-              animate={{ opacity: state === "collapsed" ? 0 : 1 }}
-              transition={{ duration: 0.2 }}
-              className="flex items-center gap-2 font-semibold"
-            >
-              <span className="text-xl">Phase One</span>
-            </motion.div>
+            {/* Desktop Sidebar Header */}
+            {state === "expanded" ? (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }} className="flex items-center gap-2 font-semibold">
+                <span className="text-xl">Phase One</span>
+              </motion.div>
+            ) : (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }} className="flex items-center justify-center w-full h-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-primary"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              </motion.div>
+            )}
           </div>
-          <div className="flex-1 overflow-auto px-2 pt-[calc(1.75rem + var(--announcement-bar-height))] pb-2">
+          <div className="flex-1 overflow-auto px-2 pt-4 pb-2">
             <nav className="grid items-start px-2 text-sm font-medium">
               {children}
             </nav>
@@ -430,6 +437,7 @@ function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
       data-sidebar="content"
       className={cn(
         "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+        "overflow-x-hidden",
         className
       )}
       {...props}
@@ -758,6 +766,7 @@ interface SidebarLinkProps extends Omit<HTMLMotionProps<"a">, "ref" | "children"
   icon: React.ReactNode;
   isActive?: boolean;
   children: React.ReactNode;
+  tooltip?: string;
 }
 
 export function SidebarLink({
@@ -766,24 +775,50 @@ export function SidebarLink({
   icon,
   children,
   isActive,
+  tooltip,
   ...props
 }: SidebarLinkProps) {
-  return (
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
+
+  const link = (
     <motion.a
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       href={href}
       className={cn(
-        "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground",
+        "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground",
         isActive && "bg-accent text-foreground",
         className
       )}
       {...props}
     >
-      {icon}
-      <span>{children}</span>
+      <span className="flex items-center justify-center w-5 h-5">{icon}</span>
+      <span className={cn("transition-opacity", isCollapsed && "opacity-0")}>{children}</span>
+      {isActive && (
+        <motion.div
+          layoutId="activeIndicator"
+          className="absolute left-0 w-1 h-6 bg-primary rounded-r-full"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.2 }}
+        />
+      )}
     </motion.a>
   );
+
+  if (tooltip && isCollapsed) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>{link}</TooltipTrigger>
+        <TooltipContent side="right" align="center">
+          {tooltip}
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return link;
 }
 
 export {

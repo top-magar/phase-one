@@ -14,7 +14,7 @@ export default function DashboardContent({ children }: { children: React.ReactNo
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, timing: tokens.animations.timing.default }}
-        className="space-y-8 p-8"
+        className="space-y-8"
       >
         {children}
       </motion.div>

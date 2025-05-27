@@ -3,7 +3,6 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -19,10 +18,6 @@ import {
   Calendar as CalendarIcon,
   Folder,
   Clock as ClockIcon,
-  Instagram,
-  Linkedin,
-  Twitter,
-  Facebook,
   Music,
   Video,
   FileText,
@@ -37,7 +32,6 @@ import {
   Plus,
   X
 } from "lucide-react";
-import AnnouncementBar from "./announcement-bar";
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -205,124 +199,119 @@ export default function HomePanel() {
   }, []);
 
   return (
-    <>
-      <AnnouncementBar />
-      
-      <div ref={containerRef} className="space-y-8 max-h-screen overflow-y-auto px-4 pb-6">
-
-        {/* Search Bar */}
-        <div className="relative mb-6">
-          <div className="flex items-center bg-white/30 backdrop-blur-md rounded-lg shadow-lg border border-white/20 px-4 py-3">
-            <Button variant="ghost" size="icon" className="text-foreground/70 hover:text-foreground mr-2">
-              <Plus className="h-5 w-5" />
-            </Button>
-            <input
-              type="text"
-              placeholder="What would you like to create?"
-              className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none text-base"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              onFocus={() => setDropdownVisible(true)}
-              onBlur={() => setTimeout(() => setDropdownVisible(false), 100)}
-            />
-            <Button variant="ghost" size="icon" className="text-foreground/70 hover:text-foreground ml-2">
-              <Search className="h-5 w-5" />
-            </Button>
-          </div>
-          {isDropdownVisible && (
-            <div className="absolute z-10 mt-2 w-full rounded-md bg-white/90 backdrop-blur-md shadow-lg border border-white/20 p-4">
-              {/* Dropdown content goes here */}
-              <p className="text-sm text-muted-foreground">Start typing to see suggestions...</p>
-            </div>
-          )}
+    <div ref={containerRef} className="space-y-8 max-h-screen overflow-y-auto px-4 pb-6">
+      <div className="relative mb-6">
+        <div className="flex items-center bg-white/30 backdrop-blur-md rounded-lg shadow-lg border border-white/20 px-4 py-3">
+          <Button variant="ghost" size="icon" className="text-foreground/70 hover:text-foreground mr-2">
+            <Plus className="h-5 w-5" />
+          </Button>
+          <input
+            type="text"
+            placeholder="What would you like to create?"
+            className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none text-base"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onFocus={() => setDropdownVisible(true)}
+            onBlur={() => setTimeout(() => setDropdownVisible(false), 100)}
+          />
+          <Button variant="ghost" size="icon" className="text-foreground/70 hover:text-foreground ml-2">
+            <Search className="h-5 w-5" />
+          </Button>
         </div>
+        {isDropdownVisible && (
+          <div className="absolute z-10 mt-2 w-full rounded-md bg-white/90 backdrop-blur-md shadow-lg border border-white/20 p-4">
+            {/* Dropdown content goes here */}
+            <p className="text-sm text-muted-foreground">Start typing to see suggestions...</p>
+          </div>
+        )}
+      </div>
 
-        {/* Header: Create a Brand Kit */}
-        <div
-          ref={el => { sectionsRef.current[0] = el; }}
+      {/* Header: Create a Brand Kit */}
+      <div
+        ref={el => { sectionsRef.current[0] = el; }}
+        className={cn(
+          "rounded-lg p-6 relative overflow-hidden",
+          "bg-white/30 backdrop-blur-md shadow-lg",
+          "border border-white/20"
+        )}
+      >
+        <div className="relative z-10">
+          <h1 className="text-2xl font-bold text-foreground mb-2">Create a Brand Kit</h1>
+          <p className="text-sm text-muted-foreground mb-6">Generate content that looks and sounds exactly like you</p>
+          <Button size="lg" className="card-hover">
+            Create Your First Brand Kit <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
+        <img src="/placeholder.svg?h=300&w=800&text=Background" alt="Brand Kit" className="absolute inset-0 w-full h-full object-cover opacity-20" />
+      </div>
+
+      {/* Category Pills */}
+      <div
+        ref={el => { sectionsRef.current[1] = el; }}
+        className={cn(
+          "rounded-lg bg-white/30 backdrop-blur-md shadow-inner",
+          "p-4"
+        )}
+      >
+        <nav className="flex flex-wrap gap-2">
+          {categoryPills.map((pill) => (
+            <button
+              key={pill.name}
+              className="flex items-center px-2.5 py-1 rounded-full bg-white text-black text-xs font-medium hover:bg-gray-100 card-hover transition-colors"
+              onClick={() => console.log(`Clicked: ${pill.name}`)}
+            >
+              {pill.icon}
+              {pill.name}
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* Three Column Section: Ideas, Generate, Integrate */}
+      <div
+        ref={el => { sectionsRef.current[2] = el; }}
+        className="grid grid-cols-1 md:grid-cols-3 gap-6"
+      >
+
+        {/* Get fresh ideas */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.1, timing: tokens.animations.timing.default }}
           className={cn(
-            "rounded-lg p-6 relative overflow-hidden",
+            "rounded-lg p-6",
             "bg-white/30 backdrop-blur-md shadow-lg",
             "border border-white/20"
           )}
         >
-          <div className="relative z-10">
-            <h1 className="text-2xl font-bold text-foreground mb-2">Create a Brand Kit</h1>
-            <p className="text-sm text-muted-foreground mb-6">Generate content that looks and sounds exactly like you</p>
-            <Button size="lg" className="card-hover">
-              Create Your First Brand Kit <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-foreground">Get fresh ideas</h2>
+            <Button variant="ghost" size="sm" asChild><a href="#" className="text-sm text-blue-600 hover:underline">See everything you can do &rarr;</a></Button>
           </div>
-          <img src="/placeholder.svg?h=300&w=800&text=Background" alt="Brand Kit" className="absolute inset-0 w-full h-full object-cover opacity-20" />
-        </div>
+          <div className="grid grid-cols-2 gap-4">
+            {contentCreationItems.map((item, index) => (
+              <Card key={index} className="bg-white/50 backdrop-blur-sm shadow-inner">
+                <CardContent className="p-4 flex flex-col items-center justify-center text-center space-y-3">
+                  <div className="mb-2">{item.icon}</div>
+                  <p className="text-sm font-medium text-foreground">{item.title}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </motion.div>
 
-        {/* Category Pills */}
-        <div
-          ref={el => { sectionsRef.current[1] = el; }}
+        {/* Generate new content */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.2, timing: tokens.animations.timing.default }}
           className={cn(
-            "rounded-lg bg-white/30 backdrop-blur-md shadow-inner",
-            "p-4"
+            "rounded-lg p-6",
+            "bg-white/30 backdrop-blur-md shadow-lg",
+            "border border-white/20"
           )}
         >
-          <nav className="flex flex-wrap gap-2">
-            {categoryPills.map((pill) => (
-              <button
-                key={pill.name}
-                className="flex items-center px-2.5 py-1 rounded-full bg-white text-black text-xs font-medium hover:bg-gray-100 card-hover transition-colors"
-                onClick={() => console.log(`Clicked: ${pill.name}`)}
-              >
-                {pill.icon}
-                {pill.name}
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        {/* Three Column Section: Ideas, Generate, Integrate */}
-        <div
-          ref={el => { sectionsRef.current[2] = el; }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6"
-        >
-
-          {/* Get fresh ideas */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1, timing: tokens.animations.timing.default }}
-            className={cn(
-              "rounded-lg p-6",
-              "bg-white/30 backdrop-blur-md shadow-lg",
-              "border border-white/20"
-            )}
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-foreground">Get fresh ideas</h2>
-              <Button variant="ghost" size="sm" asChild><a href="#" className="text-sm text-blue-600 hover:underline">See everything you can do &rarr;</a></Button>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {contentCreationItems.map((item, index) => (
-                <Card key={index} className="bg-white/50 backdrop-blur-sm shadow-inner">
-                  <CardContent className="p-4 flex flex-col items-center justify-center text-center space-y-3">
-                    <div className="mb-2">{item.icon}</div>
-                    <p className="text-sm font-medium text-foreground">{item.title}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Generate new content */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.2, timing: tokens.animations.timing.default }}
-            className={cn(
-              "rounded-lg p-6",
-              "bg-white/30 backdrop-blur-md shadow-lg",
-              "border border-white/20"
-            )}
-          >
-             <div className="flex items-center justify-between mb-6">
+           <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-foreground">Generate new content</h2>
               <Button variant="ghost" size="sm" asChild><a href="#" className="text-sm text-blue-600 hover:underline">See everything you can do &rarr;</a></Button>
             </div>
@@ -532,7 +521,6 @@ export default function HomePanel() {
 
         </div>
 
-      </div>
-    </>
+    </div>
   );
 } 

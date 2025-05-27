@@ -18,26 +18,32 @@ import AnnouncementBar from "@/components/dashboard/announcement-bar"; // Import
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
-    <>
-      <AnnouncementBar /> {/* Render the AnnouncementBar here */}
+    <div className="relative min-h-screen bg-background">
+      <AnnouncementBar />
       <SidebarProvider>
-        
         <div className={cn(
           "flex min-h-screen",
-          "bg-gradient-to-br from-neutral-50 to-neutral-100", // Using the gradient from the previous page.tsx
-          "dark:from-neutral-950 dark:to-neutral-900", // Using the gradient from the previous page.tsx
-          "pt-[calc(1.75rem + var(--announcement-bar-height))]"
+          "mt-[var(--announcement-bar-height)]", // Changed from pt to mt to ensure proper spacing
+          "p-0 m-0" 
         )}>
-          <Sidebar>
-            <DashboardSidebarNav /> {/* Use the new navigation component */}
-
+          <Sidebar 
+            variant="inset" 
+            className="z-30 border-r border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75"
+          >
+            <DashboardSidebarNav />
           </Sidebar>
-          <SidebarInset>
-            <SidebarTrigger className="m-4" /> {/* Add the trigger button */}
-            <SidebarContent>{children}</SidebarContent>
+          <SidebarInset className="z-10 relative flex-1 min-w-0">
+            <SidebarTrigger 
+              className="fixed top-[calc(var(--announcement-bar-height)+1rem)] left-[calc(var(--sidebar-width)+1rem)] z-40 md:static md:top-4 md:left-4 focus:outline-none focus:ring-2 focus:ring-primary/50" 
+            />
+            <SidebarContent className="p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto">
+              <div className="h-full w-full space-y-6">
+                {children}
+              </div>
+            </SidebarContent>
           </SidebarInset>
         </div>
       </SidebarProvider>
-    </>
+    </div>
   );
 }
