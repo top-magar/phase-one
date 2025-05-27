@@ -4,7 +4,7 @@ import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
 import { motion } from "framer-motion"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   IconClock,
   IconUsers,
@@ -172,8 +172,28 @@ function Sidebar({
   collapsible?: "offcanvas" | "icon" | "none"
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
-  const [isCollapsed, setIsCollapsed] = useState(state === "collapsed")
+  const [mounted, setMounted] = useState(false)
 
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Render a placeholder on the server or while not mounted
+  if (!mounted) {
+    return (
+      <div
+        data-slot="sidebar"
+        className={cn(
+          "bg-sidebar text-sidebar-foreground flex h-full", // Basic consistent server classes
+          collapsible === "none" ? "w-(--sidebar-width)" : "w-[var(--sidebar-width-icon)]", // Minimal width placeholder
+          className
+        )}
+        {...props}
+      />
+    )
+  }
+
+  // Client-side rendering based on isMobile
   if (collapsible === "none") {
     return (
       <div
@@ -212,29 +232,17 @@ function Sidebar({
             <div className="flex h-14 items-center border-b px-4">
               <motion.div
                 initial={{ opacity: 1 }}
-                animate={{ opacity: isCollapsed ? 0 : 1 }}
+                animate={{ opacity: state === "collapsed" ? 0 : 1 }}
                 transition={{ duration: 0.2 }}
                 className="flex items-center gap-2 font-semibold"
               >
                 <span className="text-xl">Phase One</span>
               </motion.div>
             </div>
-            <div className="flex-1 overflow-auto py-2">
+            <div className="flex-1 overflow-auto px-2 pt-[calc(1.75rem + var(--announcement-bar-height))] pb-2">
               <nav className="grid items-start px-2 text-sm font-medium">
                 {children}
               </nav>
-            </div>
-            <div className="mt-auto p-4">
-              <button
-                onClick={() => setIsCollapsed(!isCollapsed)}
-                className="flex h-9 w-9 items-center justify-center rounded-md border bg-background hover:bg-accent"
-              >
-                {isCollapsed ? (
-                  <IconChevronRight className="h-4 w-4" />
-                ) : (
-                  <IconChevronLeft className="h-4 w-4" />
-                )}
-              </button>
             </div>
           </div>
         </SheetContent>
@@ -284,29 +292,17 @@ function Sidebar({
           <div className="flex h-14 items-center border-b px-4">
             <motion.div
               initial={{ opacity: 1 }}
-              animate={{ opacity: isCollapsed ? 0 : 1 }}
+              animate={{ opacity: state === "collapsed" ? 0 : 1 }}
               transition={{ duration: 0.2 }}
               className="flex items-center gap-2 font-semibold"
             >
               <span className="text-xl">Phase One</span>
             </motion.div>
           </div>
-          <div className="flex-1 overflow-auto py-2">
+          <div className="flex-1 overflow-auto px-2 pt-[calc(1.75rem + var(--announcement-bar-height))] pb-2">
             <nav className="grid items-start px-2 text-sm font-medium">
               {children}
             </nav>
-          </div>
-          <div className="mt-auto p-4">
-            <button
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="flex h-9 w-9 items-center justify-center rounded-md border bg-background hover:bg-accent"
-            >
-              {isCollapsed ? (
-                <IconChevronRight className="h-4 w-4" />
-              ) : (
-                <IconChevronLeft className="h-4 w-4" />
-              )}
-            </button>
           </div>
         </div>
       </div>

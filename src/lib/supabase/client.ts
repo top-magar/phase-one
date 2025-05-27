@@ -13,8 +13,26 @@ export const createClient = () => {
     throw new Error('Your project\'s URL and Anon Key are required to create a Supabase client! Check your Supabase project\'s API settings to find these values: https://supabase.com/dashboard/project/_/settings/api');
   }
 
-  return createBrowserClient(
+  const client = createBrowserClient(
     supabaseUrl,
-    supabaseAnonKey
+    supabaseAnonKey,
+    {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+      },
+      global: {
+        fetch: (...args) => {
+          console.log('Fetch request:', args[0]);
+          return fetch(...args).catch(error => {
+            console.error('Fetch error:', error);
+            throw error;
+          });
+        },
+      },
+    }
   );
+
+  return client;
 }; 
