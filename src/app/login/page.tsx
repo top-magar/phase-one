@@ -1,4 +1,4 @@
-import LoginForm from '@/components/LoginForm';
+import LoginForm from '@/components/root/LoginForm';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -20,4 +20,4 @@ export default function LoginPage() {
       </div>
     </div>
   );
-} 
+}
